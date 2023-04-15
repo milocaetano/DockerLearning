@@ -1,0 +1,15 @@
+# solicita uma resposta Y ou N do usuário antes de atualizar a versão do projeto
+$resposta = Read-Host "Do you want to update the version of the project? (Y/N)"
+if ($resposta -ne 'Y') {
+    exit
+}
+
+# define a nova versão (atualiza automaticamente a última parte)
+$versaoAtual = [Version](Get-Content 'c:\caminho\para\project.csproj' | Select-String 'VersionPrefix>(.*)</VersionPrefix>' | ForEach-Object { $_.Matches[1].Value })
+$novaVersao = [Version]($versaoAtual.Major, $versaoAtual.Minor, $versaoAtual.Build + 1)
+
+# atualiza o arquivo com a nova versão
+(Get-Content 'c:\caminho\para\project.csproj') | Foreach-Object {
+    $_ -replace '<VersionPrefix>.*</VersionPrefix>', "<VersionPrefix>$($novaVersao.ToString(3))</VersionPrefix>" `
+       -replace '<AssemblyVersion>.*</AssemblyVersion>', "<AssemblyVersion>$($novaVersao.ToString(3))</AssemblyVersion>"
+} | Set-Content 'c:\caminho\para\project.csproj'

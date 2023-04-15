@@ -7,4 +7,8 @@ docker ps
 docker ps -a
 docker run -it --rm ubuntu bash #run docker and remove container after finish
 
+-rm  (remove container após execução concluída)
 
+## working with network host
+
+docker run --rm -d --name nginx --network host ngix
